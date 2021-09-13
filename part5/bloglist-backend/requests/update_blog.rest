@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/612cb2cb11f7f93fe003f0e8
+Content-Type: application/json
+
+{
+    "title": "My cream!",
+    "author": "Miteux",
+    "url": "mycream.com",
+    "likes": 1
+}
