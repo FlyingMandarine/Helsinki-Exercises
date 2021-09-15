@@ -1,41 +1,21 @@
-export const noteVotedNotification = (anecdote) => {
-    return {
-        type: 'NOTE_VOTED',
-        content: anecdote.content
-    }
-}
-
-export const noteVotedRemoveNotification = () => {
-    return {
-        type: ''
-    }
-}
-
-export const noteCreatedNotification = (content) => {
-    if (content === '') {
-        return {
-            type: ''
-        }
-    } else {
-        return {
-            type: 'NOTE_CREATED',
-            content: content
-        }
-    }
-}
-
-export const noteCreatedRemoveNotification = () => {
-    return {
-        type: ''
+export const setNotification = (string, seconds) => {
+    return async dispatch => {
+        await dispatch({
+            type: 'NOTIFICATION',
+            content: string
+        })
+        setTimeout(() => {
+            dispatch({
+                type: ''
+            })
+        }, seconds * 1000)
     }
 }
 
 const notificationReducer = (state = undefined, action) => {
     switch(action.type) {
-        case 'NOTE_VOTED':
-            return `You voted for "${action.content}".`
-        case 'NOTE_CREATED':
-            return `You created the following note: ${action.content}.`
+        case 'NOTIFICATION':
+            return action.content
         default:
             return ''
     }
