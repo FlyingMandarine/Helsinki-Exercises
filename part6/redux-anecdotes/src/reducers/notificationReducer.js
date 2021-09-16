@@ -1,10 +1,13 @@
+let timeout
+
 export const setNotification = (string, seconds) => {
     return async dispatch => {
         await dispatch({
             type: 'NOTIFICATION',
             content: string
         })
-        setTimeout(() => {
+        clearTimeout(timeout)
+        timeout = setTimeout(() => {
             dispatch({
                 type: ''
             })
