@@ -7,6 +7,7 @@ import blogService from '../services/blogs'
 const Blog = ({ increaseLikes }) => {
     const blogs = useSelector(state => state.blogs)
     const [comments, setComments] = useState([])
+    const [commentField, setCommentField] = useState('')
 
     useEffect(() => {
         const fetchComments = async () => {
@@ -26,6 +27,17 @@ const Blog = ({ increaseLikes }) => {
         return null
     }
 
+    const submitComment = async (event) => {
+        event.preventDefault()
+        const newCommentObject = { comment: commentField }
+        await blogService.postComment(blog.id, newCommentObject)
+
+        const newComments = await blogService.getComments(blog.id)
+        setComments(newComments)
+
+        setCommentField('')
+    }
+
     return (
         <div>
             <div>
@@ -43,6 +55,11 @@ const Blog = ({ increaseLikes }) => {
             <div>added by {blog.user.name}</div><br />
 
             <h2>comments</h2>
+            <input
+                value={ commentField }
+                onChange={ ({ target }) => setCommentField(target.value) }
+            />
+            <button onClick={ (event) =>  submitComment(event)}>add comment</button>
             <ul>
                 {comments.map(comment =>
                     <li key={ comment.id }>{ comment.comment }</li>
