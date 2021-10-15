@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 
+import {
+    Switch,
+    Route,
+    Link,
+    useHistory
+} from 'react-router-dom'
+
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogReducer'
@@ -10,15 +17,31 @@ import BlogForm from './components/BlogForm'
 import Error from './components/Error'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import User from './components/User'
 import UserDetails from './components/UserDetails'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
+import userService from './services/users'
 
 const App = () => {
     const dispatch = useDispatch()
     const blogs = useSelector(state => state.blogs)
     const user = useSelector(state => state.user)
+    const userProfile = useSelector(state => state.userProfile)
+
+    const history = useHistory()
+
+    const [allUsers, setAllUsers] = useState([])
+
+    useEffect(() => {
+        const fetchAllUsers = async () => {
+            const users = await userService.getUsers()
+            setAllUsers(users)
+        }
+
+        fetchAllUsers()
+    }, [ blogs ])
 
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -105,6 +128,8 @@ const App = () => {
     const handleLogout = async () => {
         window.localStorage.removeItem('loggedBlogappUser')
         dispatch(setUser(null))
+
+        history.push('/')
     }
 
     const blogForm = () => (
@@ -130,9 +155,14 @@ const App = () => {
         }
     }
 
+    const menuStyle = {
+        backgroundColor: 'silver',
+        padding: 5,
+    }
+
     if (user === null) {
         return (
-            <div>
+            <>
                 <h2>Log in to application</h2>
                 <Error errorMessage={errorMessage} />
                 <form id="login-form" onSubmit={handleLogin}>
@@ -158,29 +188,54 @@ const App = () => {
                     </div>
                     <button id="login-button" type="submit">login</button>
                 </form>
-            </div>
+            </>
         )
     }
 
+    if (!allUsers) {
+        return null
+    }
+
     return (
-        <div>
-            <h2>blogs</h2>
-            <Notification />
-            <p>
-                {user.name} logged in
+        <>
+            <div style={ menuStyle }>
+                <Route path='/blogs/:id'>
+                    {
+                        userProfile &&
+                        <Link to={ `/users/${userProfile.id}` }>blogs</Link>
+                    }
+                    &nbsp;<Link to={ '/' }>users</Link>&nbsp;
+                </Route>
+                <Route path='/users/:id'>
+                    <Link to={ '/' }>users</Link>&nbsp;
+                </Route>
+                { user.name } logged in&nbsp;
                 <button id="logout-button" onClick={handleLogout}>log out</button>
-            </p>
-            {blogForm()}
-            {blogs.map(blog =>
+            </div>
+            <h2>blog app</h2>
+            <Notification />
+            {/* {blogs.map(blog =>
                 <Blog
                     key={blog.id}
                     blog={blog}
                     username={user.username}
                     increaseLikes={increaseLikes}
                 />
-            )}
-            <UserDetails />
-        </div>
+            )} */}
+
+            <Switch>
+                <Route path='/users/:id'>
+                    { blogForm() }
+                    <User allUsers={ allUsers } />
+                </Route>
+                <Route path='/blogs/:id'>
+                    <Blog increaseLikes={ increaseLikes } />
+                </Route>
+                <Route path='/'>
+                    <UserDetails blogs={ blogs } allUsers={ allUsers } />
+                </Route>
+            </Switch>
+        </>
     )
 }
 
