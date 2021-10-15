@@ -1,9 +1,23 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router'
 
+import blogService from '../services/blogs'
+
 const Blog = ({ increaseLikes }) => {
     const blogs = useSelector(state => state.blogs)
+    const [comments, setComments] = useState([])
+
+    useEffect(() => {
+        const fetchComments = async () => {
+            if (blog) {
+                const newComments = await blogService.getComments(blog.id)
+                setComments(newComments)
+            }
+        }
+
+        fetchComments()
+    }, [])
 
     const id = useParams().id
     const blog = blogs.find(blog => blog.id === id)
@@ -13,7 +27,6 @@ const Blog = ({ increaseLikes }) => {
     }
 
     return (
-
         <div>
             <div>
                 <h2>{blog.title} {blog.author}</h2>
@@ -27,7 +40,14 @@ const Blog = ({ increaseLikes }) => {
                     like
                 </button>
             </div>
-            <div>added by {blog.user.name}</div>
+            <div>added by {blog.user.name}</div><br />
+
+            <h2>comments</h2>
+            <ul>
+                {comments.map(comment =>
+                    <li key={ comment.id }>{ comment.comment }</li>
+                )}
+            </ul>
         </div>
     )
 }
