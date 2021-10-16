@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import styled from 'styled-components'
 
 import {
     Switch,
@@ -23,6 +24,27 @@ import UserDetails from './components/UserDetails'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import userService from './services/users'
+
+
+const Wrapper = styled.div`
+        background: gray;
+        padding: 10px;
+        width: 500px;
+    `
+
+// const LogOutButton = styled.button`
+
+// `
+
+const Menu = styled.div`
+    font-size: 1.2em;
+    display: flex;
+    justify-content: space-evenly;
+`
+
+const H2Welcome = styled.h2`
+    text-align: center;
+`
 
 const App = () => {
     const dispatch = useDispatch()
@@ -162,12 +184,12 @@ const App = () => {
 
     if (user === null) {
         return (
-            <>
-                <h2>Log in to application</h2>
+            <Wrapper>
+                <H2Welcome>Log in to my app</H2Welcome>
                 <Error errorMessage={errorMessage} />
                 <form id="login-form" onSubmit={handleLogin}>
                     <div>
-                    username
+                    Username:&nbsp;
                         <input
                             id="username"
                             type="text"
@@ -177,7 +199,7 @@ const App = () => {
                         />
                     </div>
                     <div>
-                    password
+                    Password:&nbsp;&nbsp;
                         <input
                             id="password"
                             type="password"
@@ -186,9 +208,9 @@ const App = () => {
                             onChange={({ target }) => setPassword(target.value)}
                         />
                     </div>
-                    <button id="login-button" type="submit">login</button>
+                    <button id="login-button" type="submit">Log in</button>
                 </form>
-            </>
+            </Wrapper>
         )
     }
 
@@ -197,31 +219,23 @@ const App = () => {
     }
 
     return (
-        <>
-            <div style={ menuStyle }>
+        <Wrapper>
+            <Menu style={ menuStyle }>
+                Hi, { user.name }!
                 <Route path='/blogs/:id'>
                     {
                         userProfile &&
-                        <Link to={ `/users/${userProfile.id}` }>blogs</Link>
+                        <Link to={ `/users/${userProfile.id}` }>Blogs</Link>
                     }
-                    &nbsp;<Link to={ '/' }>users</Link>&nbsp;
+                    &nbsp;<Link to={ '/' }>Users</Link>&nbsp;
                 </Route>
                 <Route path='/users/:id'>
-                    <Link to={ '/' }>users</Link>&nbsp;
+                    <Link to={ '/' }>Users</Link>&nbsp;
                 </Route>
-                { user.name } logged in&nbsp;
-                <button id="logout-button" onClick={handleLogout}>log out</button>
-            </div>
-            <h2>blog app</h2>
+                <button id="logout-button" onClick={handleLogout}>Log out</button>
+            </Menu>
+            <H2Welcome>Welcome to my blog app!</H2Welcome>
             <Notification />
-            {/* {blogs.map(blog =>
-                <Blog
-                    key={blog.id}
-                    blog={blog}
-                    username={user.username}
-                    increaseLikes={increaseLikes}
-                />
-            )} */}
 
             <Switch>
                 <Route path='/users/:id'>
@@ -235,7 +249,7 @@ const App = () => {
                     <UserDetails blogs={ blogs } allUsers={ allUsers } />
                 </Route>
             </Switch>
-        </>
+        </Wrapper>
     )
 }
 
