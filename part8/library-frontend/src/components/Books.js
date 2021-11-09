@@ -2,12 +2,12 @@ import React from 'react'
 
 const Books = ({ show, booksQuery }) => {
 
-  if (booksQuery.loading) {
-    return <div>loading...</div>
-  }
-
   if (!show) {
     return null
+  }
+
+  if (booksQuery.loading) {
+    return <div>loading...</div>
   }
 
   const books = booksQuery.data.allBooks
