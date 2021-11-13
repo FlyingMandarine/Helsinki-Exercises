@@ -13,7 +13,7 @@ const Books = ({ show, booksQuery }) => {
 
       setFilteredBooks(booksToFilter)
     }
-  }, [genre, bookGenres])
+  }, [genre, bookGenres]) // eslint-disable-line
 
   if (!show) {
     return null
