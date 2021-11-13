@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-
 import { useLazyQuery } from '@apollo/client'
 import { ALL_BOOKS, USER_DETAILS } from '../queries'
 
