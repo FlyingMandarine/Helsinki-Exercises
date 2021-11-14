@@ -23,6 +23,8 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true,
         console.log('error connection to MongoDB:', error.message)
     })
 
+mongoose.set('debug', true)
+
 const typeDefs = gql`
     type User {
         username: String!
@@ -46,7 +48,7 @@ const typeDefs = gql`
         name: String!
         id: ID!
         born: Int
-        bookCount: Int!
+        bookCount: Int
     }
 
     type Query {
@@ -105,16 +107,6 @@ const resolvers = {
         }
     },
 
-    Author: {
-        bookCount: async (root) => {
-            const author = await Author.findOne({ name: root.name })
-
-            const booksByAuthor = await Book.find({ author: author._id })
-            
-            return booksByAuthor.length
-        }
-    },
-
     Book: {
         author: async (root) => {
             const author = await Author.findOne({ _id: root.author })
@@ -132,9 +124,6 @@ const resolvers = {
                 throw new AuthenticationError('You must be logged in in order to do this action.')
             }
 
-            const author = await Author.findOne({ name: args.author })
-            let book
-
             if (args.author.length < 4) {
                 throw new UserInputError('The author\'s name should be at least 4 characters long.')
             }
@@ -143,12 +132,15 @@ const resolvers = {
                 throw new UserInputError('The book\'s name should be at least 4 characters long.')
             }
 
+            const author = await Author.findOne({ name: args.author })
+            let book
+
             if (!author) {
                 const newAuthor = new Author({ name: args.author })
 
                 try {
                     const savedAuthor = await newAuthor.save()
-                    book = new Book({ ...args, author: savedAuthor._id })
+                    book = new Book({ ...args, author: savedAuthor._id, bookCount: 1 })
                 } catch (error) {
                     throw new UserInputError(error.message, {
                         invalidArgs: args,
@@ -165,6 +157,14 @@ const resolvers = {
                     invalidArgs: args,
                 })
             }
+
+            const newBook = await Book.findOne({ title: book.title })
+            const newAuthor = await Author.findById(newBook.author._id)
+
+            const filter = { _id: book.author }
+            const update = { bookCount: newAuthor.bookCount + 1 }
+
+            await Author.findOneAndUpdate(filter, update)
 
             pubsub.publish('BOOK_ADDED', { bookAdded: book })
 
