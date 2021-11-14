@@ -6,8 +6,8 @@ import LoginForm from './components/LoginForm'
 import NewBook from './components/NewBook'
 import Recommendations from './components/Recommendations'
 
-import { useQuery } from '@apollo/client'
-import { ALL_AUTHORS, ALL_BOOKS } from './queries'
+import { useQuery, useMutation, useSubscription, useApolloClient } from '@apollo/client'
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED } from './queries'
 
 const Notify = ({errorMessage}) => {
   if (!errorMessage) {
@@ -28,6 +28,15 @@ const App = () => {
 
   const authorsQuery = useQuery(ALL_AUTHORS)
   const booksQuery = useQuery(ALL_BOOKS)
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      window.alert(
+        subscriptionData.data.bookAdded.title + ' by ' +
+        subscriptionData.data.bookAdded.author.name + ' was added successfully.'
+      )
+    }
+  })
 
   const storageToken = localStorage.getItem('library-user-token')
   if (token === null && storageToken) {
