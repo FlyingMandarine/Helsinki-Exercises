@@ -9,9 +9,10 @@
   "author": "Patrice Hermenault",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^3.5.0",
+    "apollo-server": "^2.25.3",
     "dotenv": "^10.0.0",
     "graphql": "^15.6.1",
+    "graphql-subscriptions": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.8",
     "mongoose-unique-validator": "^3.0.0"
