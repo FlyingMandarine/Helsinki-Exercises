@@ -50,6 +50,7 @@ const calculateExercises = (hours: Array<number>, target: number): Result => {
             case (successPercent >= 100):
                 return 3;
         }
+        return 0;
     }
 
     const ratingDescription = (rating: number): string => {
@@ -61,6 +62,7 @@ const calculateExercises = (hours: Array<number>, target: number): Result => {
             case 3:
                 return 'You reached your target for the week. Well done!'
         }
+        return 'An error has occurred.';
     }
 
     return {

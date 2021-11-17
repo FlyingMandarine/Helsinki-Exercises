@@ -1,18 +1,17 @@
-const parseBmiArguments = (args: Array<string>) => {
-    if (args.length < 4) throw new Error('Not enough arguments.');
-    if (args.length > 4) throw new Error('Too many arguments.');
-
-    args.forEach((value: string, index: number) => {
-        if (index > 1 && isNaN(Number(value))) throw new Error('All provided values must be numbers.');
-    });
+const parseBmiArguments = (cm: string, kg: string) => {
+    if (isNaN(Number(cm)) || isNaN(Number(kg))) {
+        throw new Error('malformatted parameters');
+    }
 
     return {
-        cm: Number(process.argv[2]),
-        kg: Number(process.argv[3])
-    }
+        cm: Number(cm),
+        kg: Number(kg)
+    };
 }
 
-const calculateBmi = (cm: number, kg: number): string => {
+export const calculateBmi = (height: string, weight: string): string => {
+    const { cm, kg } = parseBmiArguments(height, weight);
+
     const calculation = kg / Math.pow(cm / 100, 2);
     
     switch (true) {
@@ -33,15 +32,16 @@ const calculateBmi = (cm: number, kg: number): string => {
         case (calculation >= 40):
             return 'Obese (Class III)';
     }
+    return 'An error has occurred.';
 }
 
-try {
-    const { cm, kg } = parseBmiArguments(process.argv);
-    console.log(calculateBmi(cm, kg));
-} catch (error: unknown) {
-    let errorMessage = 'An error has occurred.';
-    if (error instanceof Error) {
-        errorMessage += ' Error: ' + error.message;
-    }
-    console.log(errorMessage);
-}
+// try {
+//     const { cm, kg } = parseBmiArguments(process.argv);
+//     console.log(calculateBmi(cm, kg));
+// } catch (error: unknown) {
+//     let errorMessage = 'An error has occurred.';
+//     if (error instanceof Error) {
+//         errorMessage += ' Error: ' + error.message;
+//     }
+//     console.log(errorMessage);
+// }
