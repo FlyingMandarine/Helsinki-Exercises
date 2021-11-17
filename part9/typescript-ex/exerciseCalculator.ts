@@ -15,7 +15,7 @@ const parseExerciseArguments = (args: Array<string>) => {
         if (index > 1 && isNaN(Number(value))) throw new Error('All provided values must be numbers.');
     });
 
-    let hoursArray: Array<number> = [];
+    const hoursArray: Array<number> = [];
 
     process.argv.forEach((value: string, index: number) => {
         if (index > 2) {
@@ -26,8 +26,8 @@ const parseExerciseArguments = (args: Array<string>) => {
     return {
         hours: hoursArray,
         target: Number(process.argv[2])
-    }
-}
+    };
+};
 
 const calculateExercises = (hours: Array<number>, target: number): Result => {
     const periodLength = hours.length;
@@ -35,7 +35,7 @@ const calculateExercises = (hours: Array<number>, target: number): Result => {
 
     const add = (accumulator: number, a: number): number => {
         return accumulator + a;
-    }
+    };
     const average = hours.reduce(add, 0) / periodLength;
 
     const success = average < target ? false : true;
@@ -51,19 +51,19 @@ const calculateExercises = (hours: Array<number>, target: number): Result => {
                 return 3;
         }
         return 0;
-    }
+    };
 
     const ratingDescription = (rating: number): string => {
         switch (rating) {
             case 1:
-                return 'You achieved less than half of your target. You need to work harder!'
+                return 'You achieved less than half of your target. You need to work harder!';
             case 2:
-                return 'You achieved at least half of your target. Could be better!'
+                return 'You achieved at least half of your target. Could be better!';
             case 3:
-                return 'You reached your target for the week. Well done!'
+                return 'You reached your target for the week. Well done!';
         }
         return 'An error has occurred.';
-    }
+    };
 
     return {
         periodLength: periodLength,
@@ -73,8 +73,8 @@ const calculateExercises = (hours: Array<number>, target: number): Result => {
         ratingDescription: ratingDescription(rating(average)),
         target: target,
         average: average,
-    }
-}
+    };
+};
 
 try {
     const { hours, target } = parseExerciseArguments(process.argv);
