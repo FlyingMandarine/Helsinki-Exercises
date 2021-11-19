@@ -5,5 +5,6 @@ Content-Type: application/json
     "name": "Patrice Hermenault",
     "dateOfBirth": "1985-11-09",
     "gender": "male",
-    "occupation": "developer"
+    "occupation": "developer",
+    "ssn": "432902-i90"
 }
