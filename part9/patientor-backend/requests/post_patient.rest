@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+    "name": "Patrice Hermenault",
+    "dateOfBirth": "1985-11-09",
+    "gender": "male",
+    "occupation": "developer"
+}
