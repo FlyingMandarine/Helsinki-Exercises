@@ -1,6 +1,6 @@
-import { Gender, NewPatient } from './types';
+import { Entry, Gender, NewPatient } from './types';
 
-type Fields = { name: unknown, dateOfBirth: unknown, ssn: unknown, gender: unknown, occupation: unknown };
+type Fields = { name: unknown, dateOfBirth: unknown, ssn: unknown, gender: unknown, occupation: unknown, entries: unknown };
 
 const isString = (text: unknown): text is string => {
     return typeof text === 'string' || text instanceof String;
@@ -9,6 +9,15 @@ const isString = (text: unknown): text is string => {
 const isDate = (dateOfBirth: string): boolean => {
     return Boolean(Date.parse(dateOfBirth));
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isGender = (param: any): param is Gender => {
+    return Object.values(Gender).includes(param);
+};
+
+const isEntries = (param: any): param is Entry => {
+    return param instanceof Array;
+}
 
 const parseName = (name: unknown): string => {
     if (!name || !isString(name)) {
@@ -34,11 +43,6 @@ const parseSsn = (ssn: unknown): string => {
     return ssn;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isGender = (param: any): param is Gender => {
-    return Object.values(Gender).includes(param);
-};
-
 const parseGender = (gender: unknown): Gender => {
     if (!gender || !isGender(gender)) {
         throw new Error('Incorrect or missing gender: ' + gender);
@@ -55,13 +59,22 @@ const parseOccupation = (occupation: unknown): string => {
     return occupation;
 };
 
-const toNewPatient = ({ name, dateOfBirth, ssn, gender, occupation }: Fields): NewPatient => {
+const parseEntries = (entries: unknown): any => {
+    if (!entries || !isEntries(entries)) {
+        throw new Error('Incorrect or missing entries: ' + entries);
+    }
+
+    return entries;
+}
+
+const toNewPatient = ({ name, dateOfBirth, ssn, gender, occupation, entries }: Fields): NewPatient => {
     const newPatient: NewPatient = {
         name: parseName(name),
         dateOfBirth: parseDate(dateOfBirth),
         ssn: parseSsn(ssn),
         gender: parseGender(gender),
-        occupation: parseOccupation(occupation)
+        occupation: parseOccupation(occupation),
+        entries: parseEntries(entries),
     };
 
     return newPatient;
