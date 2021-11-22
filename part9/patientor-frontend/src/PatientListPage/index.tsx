@@ -29,7 +29,6 @@ const PatientListPage = () => {
         `${apiBaseUrl}/patients`,
         values
       );
-      // dispatch({ type: "ADD_PATIENT", payload: newPatient });
       dispatch(addPatient(newPatient));
       closeModal();
     } catch (e) {

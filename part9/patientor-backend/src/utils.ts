@@ -17,7 +17,7 @@ const isGender = (param: any): param is Gender => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isEntries = (param: any): param is Entry => {
+const isEntries = (param: any): param is Entry[] => {
     return param instanceof Array;
 };
 
@@ -61,7 +61,7 @@ const parseOccupation = (occupation: unknown): string => {
     return occupation;
 };
 
-const parseEntries = (entries: unknown): Entry => {
+const parseEntries = (entries: unknown): Entry[] => {
     if (!entries || !isEntries(entries)) {
         throw new Error('Incorrect or missing entries: ' + entries);
     }

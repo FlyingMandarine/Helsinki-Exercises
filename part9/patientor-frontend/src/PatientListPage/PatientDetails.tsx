@@ -19,7 +19,6 @@ const PatientDetails = () => {
                 const { data: patientDetailsFromApi } = await axios.get<Patient>(
                     `${apiBaseUrl}/patients/${patientId}`
                 );
-                // dispatch({ type: 'SET_PATIENT_DETAILS', payload: patientDetailsFromApi });
                 dispatch(setPatientDetails(patientDetailsFromApi));
             } catch (e) {
                 console.error(e);
@@ -41,6 +40,22 @@ const PatientDetails = () => {
             </h1>
             ssn: {patient.ssn}<br />
             occupation: {patient.occupation}
+
+            <h2>entries</h2>
+            {
+                patient.entries &&
+                patient.entries.map(entry => 
+                    <div key={ entry.id }>
+                        <div>{ entry.date } <em>{ entry.description }</em></div>
+                        <ul>
+                            {
+                                entry.diagnosisCodes &&
+                                entry.diagnosisCodes.map(code => <li key={ code }>{ code }</li>)
+                            }
+                        </ul>
+                    </div>
+                )
+            }
         </>
     );
 };

@@ -68,7 +68,7 @@ export interface Patient {
     occupation: string;
     gender: Gender;
     dateOfBirth: string;
-    entries: Entry[]
+    entries: Entry[];
 }
 
 export type NewPatient = Omit<Patient, 'id'>;
