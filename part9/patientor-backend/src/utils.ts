@@ -12,12 +12,14 @@ const isDate = (dateOfBirth: string): boolean => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isGender = (param: any): param is Gender => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return Object.values(Gender).includes(param);
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isEntries = (param: any): param is Entry => {
     return param instanceof Array;
-}
+};
 
 const parseName = (name: unknown): string => {
     if (!name || !isString(name)) {
@@ -59,13 +61,13 @@ const parseOccupation = (occupation: unknown): string => {
     return occupation;
 };
 
-const parseEntries = (entries: unknown): any => {
+const parseEntries = (entries: unknown): Entry => {
     if (!entries || !isEntries(entries)) {
         throw new Error('Incorrect or missing entries: ' + entries);
     }
 
     return entries;
-}
+};
 
 const toNewPatient = ({ name, dateOfBirth, ssn, gender, occupation, entries }: Fields): NewPatient => {
     const newPatient: NewPatient = {

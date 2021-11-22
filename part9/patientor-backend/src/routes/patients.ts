@@ -1,6 +1,7 @@
 import express from 'express';
 import toNewPatient from '../utils';
 import patientService from '../services/patientService';
+import { NewPatient } from '../types';
 
 const router = express.Router();
 
@@ -20,7 +21,8 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
     try {
-        const newPatient = toNewPatient(req.body);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        const newPatient: NewPatient = toNewPatient(req.body);
 
         const addedPatient = patientService.addPatient(newPatient);
         res.json(addedPatient);
