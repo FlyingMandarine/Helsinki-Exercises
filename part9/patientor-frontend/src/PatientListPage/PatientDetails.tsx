@@ -7,9 +7,11 @@ import { apiBaseUrl } from "../constants";
 import { Patient } from "../types";
 import { setPatientDetails } from "../state";
 
+import EntryDetails from "./EntryDetails";
+
 const PatientDetails = () => {
     const patientId: string = useParams<{ id: string }>().id;
-    const [{ patients, diagnoses }, dispatch] = useStateValue();
+    const [{ patients }, dispatch] = useStateValue();
 
     const patient: Patient = patients[patientId];
 
@@ -44,20 +46,8 @@ const PatientDetails = () => {
             <h2>entries</h2>
             {
                 patient.entries &&
-                patient.entries.map(entry => 
-                    <div key={ entry.id }>
-                        <div>{ entry.date } <em>{ entry.description }</em></div>
-                        <ul>
-                            {
-                                entry.diagnosisCodes &&
-                                entry.diagnosisCodes.map(code =>
-                                    <li key={ code }>
-                                        { code } { diagnoses[code]['name'] }
-                                    </li>
-                                )
-                            }
-                        </ul>
-                    </div>
+                patient.entries.map(entry =>
+                    <EntryDetails key={ entry.id } entry={ entry } />
                 )
             }
         </>
