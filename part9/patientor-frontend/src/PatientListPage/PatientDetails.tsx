@@ -9,7 +9,7 @@ import { setPatientDetails } from "../state";
 
 const PatientDetails = () => {
     const patientId: string = useParams<{ id: string }>().id;
-    const [{ patients }, dispatch] = useStateValue();
+    const [{ patients, diagnoses }, dispatch] = useStateValue();
 
     const patient: Patient = patients[patientId];
 
@@ -50,7 +50,11 @@ const PatientDetails = () => {
                         <ul>
                             {
                                 entry.diagnosisCodes &&
-                                entry.diagnosisCodes.map(code => <li key={ code }>{ code }</li>)
+                                entry.diagnosisCodes.map(code =>
+                                    <li key={ code }>
+                                        { code } { diagnoses[code]['name'] }
+                                    </li>
+                                )
                             }
                         </ul>
                     </div>
