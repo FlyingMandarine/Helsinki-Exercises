@@ -10,14 +10,19 @@ export interface Diagnosis {
     latin?: string;
 }
 
+export interface Discharge {
+    date: string;
+    criteria: string;
+}
+
 export type NonSensitivePatientEntry = Omit<Patient, 'ssn'>;
 
 export type PublicPatient = Omit<Patient, 'ssn' | 'entries'>;
 
 // Define special omit for unions
-// type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
 // Define Entry without the 'id' property
-// type EntryWithoutId = UnionOmit<Entry, 'id'>;
+export type EntryWithoutId = UnionOmit<Entry, 'id'>;
 
 export type Entry =
     | HospitalEntry

@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/patients/d2773598-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+    "type": "HealthCheck",
+    "description": "Over-worked",
+    "date": "2021-11-01",
+    "specialist": "Miteux",
+    "healthCheckRating": 3
+}
