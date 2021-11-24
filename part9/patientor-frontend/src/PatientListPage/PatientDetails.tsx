@@ -10,12 +10,14 @@ import { setPatientDetails } from "../state";
 import EntryDetails from "./EntryDetails";
 import { HospitalEntryFormValues } from "../AddEntryModal/AddHospitalEntryForm";
 import { OccupationalHealthcareEntryFormValues } from "../AddEntryModal/AddOccupationalEntryForm";
-import { AddHospitalEntryModal, AddOccupationalHealthcareEntryModal } from "../AddEntryModal";
+import { AddHospitalEntryModal, AddOccupationalHealthcareEntryModal, AddHealthCheckEntryModal } from "../AddEntryModal";
 import { Button } from "semantic-ui-react";
+import { HealthCheckEntryFormValues } from "../AddEntryModal/AddHealthCheckEntryForm";
 
 const PatientDetails = () => {
     const [hospitalModalOpen, setHospitalModalOpen] = React.useState<boolean>(false);
     const [occupationalHealthcareModalOpen, setOccupationalHealthcareModalOpen] = React.useState<boolean>(false);
+    const [healthCheckModalOpen, setHealthCheckModalOpen] = React.useState<boolean>(false);
     const [error, setError] = React.useState<string | undefined>();
 
     const patientId: string = useParams<{ id: string }>().id;
@@ -42,6 +44,7 @@ const PatientDetails = () => {
 
     const hospitalOpenModal = (): void => setHospitalModalOpen(true);
     const occupationalHealthcareOpenModal = (): void => setOccupationalHealthcareModalOpen(true);
+    const healthCheckOpenModal = (): void => setHealthCheckModalOpen(true);
 
     const hospitalCloseModal = (): void => {
         setHospitalModalOpen(false);
@@ -53,8 +56,17 @@ const PatientDetails = () => {
         setError(undefined);
     };
 
-    const submitNewEntry = async (values: HospitalEntryFormValues | OccupationalHealthcareEntryFormValues) => {
+    const healthCheckCloseModal = (): void => {
+        setHealthCheckModalOpen(false);
+        setError(undefined);
+    };
+
+    const submitNewEntry = async (
+        values: HospitalEntryFormValues | OccupationalHealthcareEntryFormValues | HealthCheckEntryFormValues
+    ) => {
         try {
+            if (values.type === 'HealthCheck') values.healthCheckRating = Number(values.healthCheckRating);
+            
             const { data: updatedPatient } = await axios.post<Patient>(
                 `${apiBaseUrl}/patients/${patientId}/entries`,
                 values
@@ -62,6 +74,7 @@ const PatientDetails = () => {
             dispatch(setPatientDetails(updatedPatient));
             hospitalCloseModal();
             occupationalHealthcareCloseModal();
+            healthCheckCloseModal();
         } catch (e) {
             console.error(e.response?.data || 'Unknown Error');
             setError(e.response?.data?.error || 'Unknown error');
@@ -99,8 +112,16 @@ const PatientDetails = () => {
                 error={error}
                 onClose={occupationalHealthcareCloseModal}
             />
+            <AddHealthCheckEntryModal
+                modalOpen={healthCheckModalOpen}
+                onSubmit={submitNewEntry}
+                error={error}
+                onClose={healthCheckCloseModal}
+            />
+
             <Button onClick={() => hospitalOpenModal()}>Add Hospital Entry</Button>
             <Button onClick={() => occupationalHealthcareOpenModal()}>Add Occupational Health Care Entry</Button>
+            <Button onClick={() => healthCheckOpenModal()}>Add Health Check Entry</Button>
         </>
     );
 };
