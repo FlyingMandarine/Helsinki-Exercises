@@ -82,8 +82,6 @@ const HealthCheckDetails: React.FC<{ entry: HealthCheckEntry }> = ({ entry }) =>
 };
 
 const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
-    
-
     switch (entry.type) {
         case "Hospital":
             return <HospitalEntryDetails entry={ entry } />;

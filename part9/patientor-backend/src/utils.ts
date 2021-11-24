@@ -8,7 +8,7 @@ type HealthCheckFields = { type: unknown, description: unknown, date: unknown, s
 const assertNever = (value: never): never => {
     throw new Error(
         `Unhandled case: ${JSON.stringify(value)}`
-    )
+    );
 };
 
 const isString = (text: unknown): text is string => {
@@ -35,8 +35,8 @@ const isEntries = (param: any): param is Entry[] => {
     return param instanceof Array;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isDiagnosisCodes = (param: any): param is string[] => {
-    // return param.every((i: any) => (typeof i === "string"));
     return param instanceof Array;
 };
 

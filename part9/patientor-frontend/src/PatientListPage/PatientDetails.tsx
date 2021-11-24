@@ -8,8 +8,14 @@ import { Patient } from "../types";
 import { setPatientDetails } from "../state";
 
 import EntryDetails from "./EntryDetails";
+import { HospitalEntryFormValues } from "../AddEntryModal/AddEntryForm";
+import AddEntryModal from "../AddEntryModal";
+import { Button } from "semantic-ui-react";
 
 const PatientDetails = () => {
+    const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+    const [error, setError] = React.useState<string | undefined>();
+
     const patientId: string = useParams<{ id: string }>().id;
     const [{ patients }, dispatch] = useStateValue();
 
@@ -32,6 +38,27 @@ const PatientDetails = () => {
         }
     }, []);
 
+    const openModal = (): void => setModalOpen(true);
+
+    const closeModal = (): void => {
+        setModalOpen(false);
+        setError(undefined);
+    };
+
+    const submitNewEntry = async (values: HospitalEntryFormValues) => {
+        try {
+            const { data: updatedPatient } = await axios.post<Patient>(
+                `${apiBaseUrl}/patients/${patientId}/entries`,
+                values
+            );
+            dispatch(setPatientDetails(updatedPatient));
+            closeModal();
+        } catch (e) {
+            console.error(e.response?.data || 'Unknown Error');
+            setError(e.response?.data?.error || 'Unknown error');
+        }
+    };
+
     return (
         <>
             <h1>
@@ -50,6 +77,14 @@ const PatientDetails = () => {
                     <EntryDetails key={ entry.id } entry={ entry } />
                 )
             }
+
+            <AddEntryModal
+                modalOpen={modalOpen}
+                onSubmit={submitNewEntry}
+                error={error}
+                onClose={closeModal}
+            />
+            <Button onClick={() => openModal()}>Add Hospital Entry</Button>
         </>
     );
 };

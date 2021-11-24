@@ -34,7 +34,7 @@ const addEntry = (patientId: string, entry: EntryWithoutId) => {
     };
 
     if (patient === undefined) {
-        throw new Error('Patient not found.')
+        throw new Error('Patient not found.');
     }
 
     patient.entries.push(newEntry);    
