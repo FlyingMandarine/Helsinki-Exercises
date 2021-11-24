@@ -8,12 +8,14 @@ import { Patient } from "../types";
 import { setPatientDetails } from "../state";
 
 import EntryDetails from "./EntryDetails";
-import { HospitalEntryFormValues } from "../AddEntryModal/AddEntryForm";
-import AddEntryModal from "../AddEntryModal";
+import { HospitalEntryFormValues } from "../AddEntryModal/AddHospitalEntryForm";
+import { OccupationalHealthcareEntryFormValues } from "../AddEntryModal/AddOccupationalEntryForm";
+import { AddHospitalEntryModal, AddOccupationalHealthcareEntryModal } from "../AddEntryModal";
 import { Button } from "semantic-ui-react";
 
 const PatientDetails = () => {
-    const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+    const [hospitalModalOpen, setHospitalModalOpen] = React.useState<boolean>(false);
+    const [occupationalHealthcareModalOpen, setOccupationalHealthcareModalOpen] = React.useState<boolean>(false);
     const [error, setError] = React.useState<string | undefined>();
 
     const patientId: string = useParams<{ id: string }>().id;
@@ -38,21 +40,28 @@ const PatientDetails = () => {
         }
     }, []);
 
-    const openModal = (): void => setModalOpen(true);
+    const hospitalOpenModal = (): void => setHospitalModalOpen(true);
+    const occupationalHealthcareOpenModal = (): void => setOccupationalHealthcareModalOpen(true);
 
-    const closeModal = (): void => {
-        setModalOpen(false);
+    const hospitalCloseModal = (): void => {
+        setHospitalModalOpen(false);
         setError(undefined);
     };
 
-    const submitNewEntry = async (values: HospitalEntryFormValues) => {
+    const occupationalHealthcareCloseModal = (): void => {
+        setOccupationalHealthcareModalOpen(false);
+        setError(undefined);
+    };
+
+    const submitNewEntry = async (values: HospitalEntryFormValues | OccupationalHealthcareEntryFormValues) => {
         try {
             const { data: updatedPatient } = await axios.post<Patient>(
                 `${apiBaseUrl}/patients/${patientId}/entries`,
                 values
             );
             dispatch(setPatientDetails(updatedPatient));
-            closeModal();
+            hospitalCloseModal();
+            occupationalHealthcareCloseModal();
         } catch (e) {
             console.error(e.response?.data || 'Unknown Error');
             setError(e.response?.data?.error || 'Unknown error');
@@ -78,13 +87,20 @@ const PatientDetails = () => {
                 )
             }
 
-            <AddEntryModal
-                modalOpen={modalOpen}
+            <AddHospitalEntryModal
+                modalOpen={hospitalModalOpen}
                 onSubmit={submitNewEntry}
                 error={error}
-                onClose={closeModal}
+                onClose={hospitalCloseModal}
             />
-            <Button onClick={() => openModal()}>Add Hospital Entry</Button>
+            <AddOccupationalHealthcareEntryModal
+                modalOpen={occupationalHealthcareModalOpen}
+                onSubmit={submitNewEntry}
+                error={error}
+                onClose={occupationalHealthcareCloseModal}
+            />
+            <Button onClick={() => hospitalOpenModal()}>Add Hospital Entry</Button>
+            <Button onClick={() => occupationalHealthcareOpenModal()}>Add Occupational Health Care Entry</Button>
         </>
     );
 };

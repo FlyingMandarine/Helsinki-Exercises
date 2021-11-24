@@ -7,15 +7,14 @@ import { TextField } from "../AddPatientModal/FormField";
 import { HospitalEntry } from "../types";
 import { DiagnosisSelection } from '../AddPatientModal/FormField';
 
-
 export type HospitalEntryFormValues = Omit<HospitalEntry, "id">;
 
-interface Props {
+interface HospitalEntryProps {
   onSubmit: (values: HospitalEntryFormValues) => void;
   onCancel: () => void;
 }
 
-export const AddHospitalEntryForm = ({ onSubmit, onCancel }: Props ) => {
+export const AddHospitalEntryForm = ({ onSubmit, onCancel }: HospitalEntryProps ) => {
   const [{ diagnoses }] = useStateValue();
 
   return (
